@@ -5,18 +5,26 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "budo src/index.js --live"
+    "start": "parcel index.html",
+    "build": "parcel build index.html",
+    "deploy": "npm run-script build && surge -p dist -d https://trie.surge.sh",
+    "upload": "surge -p dist -d https://trie.surge.sh"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "browserslist": [
+    "last 1 Chrome version"
+  ],
   "dependencies": {
     "choo": "^7.0.0",
     "hyperdb": "^3.5.0",
     "random-access-idb": "^1.2.1"
   },
   "devDependencies": {
-    "budo": "^11.6.3",
-    "tachyons": "^4.11.1"
+    "parcel": "^1.12.4",
+    "parcel-plugin-sw-precache": "^1.1.1",
+    "surge": "^0.21.3",
+    "tachyons": "^4.10.0"
   }
 }
