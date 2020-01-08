@@ -38,9 +38,9 @@ const posted = async request => {
   return new Promise((resolve, reject) => {
     if (request.method === 'POST') {
       return request.formData().then(data => {
-        const title = data.get('title')
+        const title = new URL(request.url).pathname
         const body = data.get('body')
-        
+
         return dbSet(title, body)
       }).then(body => resolve(new Response(body)))
     }
@@ -48,8 +48,36 @@ const posted = async request => {
   })
 }
 
+const form = contents => {
+  return `<form method="post">
+     <label for="body">body:</label>
+     <input class="db ma3" id="body" name="body" type="text-area"/>
+     <input type="submit" value="submit"/>
+  </form>`
+}
+
+const create = async request => {
+  return new Promise((resolve, reject) => {
+    const url = new URL(request.url)
+    if (url.searchParams.get('edit')) {
+      return resolve(
+        new Response(form(null),
+          { headers: { 'Content-Type': 'text/html' }}
+        )
+      )
+    }
+     
+    return reject(request)
+  })
+}
+
 self.addEventListener('fetch', e => {
-  e.respondWith(posted(e.request).catch(cached).catch(fetch))
+  e.respondWith(
+    posted(e.request)
+      .catch(create)
+      .catch(cached)
+      .catch(fetch)
+  )
 })
 
 self.addEventListener('install', e => {
