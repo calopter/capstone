@@ -8,7 +8,7 @@ const dbGet = async (path, rejection) => {
     db.get(path, (err, nodes) => {
       if (err) return reject(err)
       if (!nodes[0]) return reject(rejection)
-      const response = new Response(nodes[0].value)
+      const response = new Response(nodes[0].value, { headers: { 'Content-Type': 'text/html' }})
       resolve(response)
     })
   })
@@ -23,7 +23,7 @@ const dbSet = async (key, val) => {
   })
 }
 
-dbSet('/hello', 'hello world from db')
+dbSet('/hello', "<a href='hello?edit=true'>hello world from db</a>")
 
 const cached = async request => {
   const url = new URL(request.url)
