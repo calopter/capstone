@@ -18,35 +18,38 @@ const dbSet = async (key, val) => {
   return new Promise((resolve, reject) => {
     db.put(key, val, err => {
       if (err) return reject(err)
-      resolve(`stored to ${key}`)
+      resolve(val)
     })
   })
 }
 
 dbSet('/hello', 'hello world from db')
 
-const cachedResponse = ({ request }) => {
+const cached = async request => {
   const url = new URL(request.url)
   
   return caches.match(request).then(response => {
     if (response) return response
-    return dbGet(url.pathname, request).catch(fetch)
+    return dbGet(url.pathname, request)
   })
 }
 
-const postResponse = e => new Promise(resolve => {
-  e.request.formData().then(data => {
-    const title = data.get('title')
-    const body = data.get('body')
-    dbSet(title, body)
-    return resolve(new Response(body))
+const posted = async request => {
+  return new Promise((resolve, reject) => {
+    if (request.method === 'POST') {
+      return request.formData().then(data => {
+        const title = data.get('title')
+        const body = data.get('body')
+        
+        return dbSet(title, body)
+      }).then(body => resolve(new Response(body)))
+    }
+    return reject(request)
   })
-})
+}
 
 self.addEventListener('fetch', e => {
-  e.respondWith(e.request.method === 'POST' ?
-    postResponse(e) : cachedResponse(e)
-  )
+  e.respondWith(posted(e.request).catch(cached).catch(fetch))
 })
 
 self.addEventListener('install', e => {
