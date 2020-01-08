@@ -5,17 +5,18 @@ const db = hyperdb(rai('./my.db'), {valueEncoding: 'utf-8'})
 
 console.log('hello from sw')
 
-const fetch = async path => {
+const dbGet = async (path, rejection) => {
   return new Promise((resolve, reject) => {
     db.get(path, (err, nodes) => {
       if (err) return reject(err)
-      if (!nodes[0]) return reject('path not found')
-      resolve(nodes[0].value)
+      if (!nodes[0]) return reject(rejection)
+      const response = new Response(nodes[0].value)
+      resolve(response)
     })
   })
 }
 
-const put = async (key, val) => {
+const dbSet = async (key, val) => {
   return new Promise((resolve, reject) => {
     db.put(key, val, err => {
       if (err) return reject(err)
@@ -24,23 +25,29 @@ const put = async (key, val) => {
   })
 }
 
+dbSet('/hello', 'hello world from db')
+
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url)
+  e.respondWith(
+    caches.match(e.request).then(response => {
+      if (response) return response
+      return dbGet(url.pathname, e.request).then(r => r).catch(fetch)
+    })
+  )
+})
+
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('capstone').then(cache => {
+    caches.open('trieWiki').then(cache => {
       return cache.addAll([
         '/',
         'index.html',
         'bundle.js',
         'tachyons.min.css',
+        'manifest.webmanifest',
+        'assets/fox-icon.png',
       ])
     })
-  )
-})
-
-self.addEventListener('fetch', e => {
-  console.log(e.request.url);
-  e.respondWith(
-    caches.match(e.request)
-      .then(response => response || fetch(e.request))
   )
 })
