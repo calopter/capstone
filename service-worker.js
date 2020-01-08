@@ -3,8 +3,6 @@ const rai = require('random-access-idb')
 
 const db = hyperdb(rai('./my.db'), {valueEncoding: 'utf-8'})
 
-console.log('hello from sw')
-
 const dbGet = async (path, rejection) => {
   return new Promise((resolve, reject) => {
     db.get(path, (err, nodes) => {
@@ -27,13 +25,27 @@ const dbSet = async (key, val) => {
 
 dbSet('/hello', 'hello world from db')
 
+const cachedResponse = ({ request }) => {
+  const url = new URL(request.url)
+  
+  return caches.match(request).then(response => {
+    if (response) return response
+    return dbGet(url.pathname, request).catch(fetch)
+  })
+}
+
+const postResponse = e => new Promise(resolve => {
+  e.request.formData().then(data => {
+    const title = data.get('title')
+    const body = data.get('body')
+    dbSet(title, body)
+    return resolve(new Response(body))
+  })
+})
+
 self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url)
-  e.respondWith(
-    caches.match(e.request).then(response => {
-      if (response) return response
-      return dbGet(url.pathname, e.request).then(r => r).catch(fetch)
-    })
+  e.respondWith(e.request.method === 'POST' ?
+    postResponse(e) : cachedResponse(e)
   )
 })
 
