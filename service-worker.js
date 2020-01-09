@@ -23,13 +23,15 @@ const dbSet = (key, val) => {
 }
 
 dbSet('/hello', "<a href='hello?edit=true'>hello world from db</a>")
+dbSet('/hi', 'hi')
+dbSet('empty', null)
 
 const respond = body => {
   const headers = { headers: { 'Content-Type': 'text/html' }}
   return new Response(body, headers)
 }
 
-const cached = request => {
+const read = request => {
   const url = new URL(request.url)
 
   return new Promise((resolve, reject) => {
@@ -40,7 +42,7 @@ const cached = request => {
   })
 }
 
-const posted = request => {
+const create = request => {
   return new Promise((resolve, reject) => {
     if (request.method === 'POST') {
       return request.formData().then(data => {
@@ -57,16 +59,23 @@ const posted = request => {
 const form = contents => {
   return `<form method="post">
      <label for="body">body:</label>
-     <input class="db ma3" id="body" name="body" type="text-area"/>
+     <input class="db ma3"
+       id="body" name="body"
+       type="text-area"
+       value=${contents}/>
      <input type="submit" value="submit"/>
   </form>`
 }
 
-const create = request => {
+const newForm = request => {
+  const url = new URL(request.url)
+  
   return new Promise((resolve, reject) => {
-    const url = new URL(request.url)
     if (url.searchParams.get('edit')) {
-      return resolve(respond(form(null)))
+      return resolve(
+        dbGet(url.pathname, null)
+          .then(content => respond(form(content)))
+      )
     }
      
     return reject(request)
@@ -75,9 +84,9 @@ const create = request => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    posted(e.request)
-      .catch(create)
-      .catch(cached)
+    create(e.request)
+      .catch(newForm)
+      .catch(read)
       .catch(fetch)
   )
 })
