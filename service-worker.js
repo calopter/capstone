@@ -13,6 +13,16 @@ const dbGet = (path, rejection) => {
   })
 }
 
+const dbRead = path => {
+  return new Promise(resolve => {
+    db.get(path, (err, nodes) => {
+      if (err) return resolve(null)
+      if (!nodes[0]) return resolve(null)
+      return resolve(nodes[0].value)
+    })
+  })
+}
+
 const dbSet = (key, val) => {
   return new Promise((resolve, reject) => {
     db.put(key, val, err => {
@@ -23,6 +33,7 @@ const dbSet = (key, val) => {
 }
 
 dbSet('/hello', "<a href='hello?edit=true'>hello world from db</a>")
+dbSet('/index', "<a href='/new'>some new content</a>")
 dbSet('/hi', 'hi')
 dbSet('empty', null)
 
@@ -38,7 +49,7 @@ const read = request => {
     return caches.match(request).then(response => {
       if (response) return resolve(response)
       return dbGet(url.pathname, request)
-    }).then(content => resolve(respond(content)))
+    }).then(content => resolve(respond(content))).catch(reject)
   })
 }
 
@@ -73,7 +84,7 @@ const newForm = request => {
   return new Promise((resolve, reject) => {
     if (url.searchParams.get('edit')) {
       return resolve(
-        dbGet(url.pathname, null)
+        dbRead(url.pathname)
           .then(content => respond(form(content)))
       )
     }
