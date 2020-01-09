@@ -53,7 +53,7 @@ const read = request => {
   })
 }
 
-const create = request => {
+const write = request => {
   return new Promise((resolve, reject) => {
     if (request.method === 'POST') {
       return request.formData().then(data => {
@@ -93,12 +93,31 @@ const newForm = request => {
   })
 }
 
+const create = request => {
+  const {
+    cache, credentials, headers, integrity, method,
+    mode, redirect, referrer, referrerPolicy, url, body
+  } = request
+
+  const init = {
+    cache, credentials, headers, integrity, method,
+    mode: 'same-origin', redirect, referrer, referrerPolicy, body
+  }
+  
+  // add ?edit=true to url
+  const newReq = new Request(url + '?edit=true', init)
+  
+  // send to newForm
+  return newForm(newReq)
+}
+
 self.addEventListener('fetch', e => {
   e.respondWith(
-    create(e.request)
+    write(e.request)
       .catch(newForm)
       .catch(read)
-      .catch(fetch)
+      .catch(create)
+      // .catch(fetch)
   )
 })
 
