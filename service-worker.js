@@ -3,18 +3,17 @@ const rai = require('random-access-idb')
 
 const db = hyperdb(rai('./my.db'), {valueEncoding: 'utf-8'})
 
-const dbGet = async (path, rejection) => {
+const dbGet = (path, rejection) => {
   return new Promise((resolve, reject) => {
     db.get(path, (err, nodes) => {
       if (err) return reject(err)
       if (!nodes[0]) return reject(rejection)
-      const response = new Response(nodes[0].value, { headers: { 'Content-Type': 'text/html' }})
-      resolve(response)
+      resolve(nodes[0].value)
     })
   })
 }
 
-const dbSet = async (key, val) => {
+const dbSet = (key, val) => {
   return new Promise((resolve, reject) => {
     db.put(key, val, err => {
       if (err) return reject(err)
@@ -25,16 +24,23 @@ const dbSet = async (key, val) => {
 
 dbSet('/hello', "<a href='hello?edit=true'>hello world from db</a>")
 
-const cached = async request => {
+const respond = body => {
+  const headers = { headers: { 'Content-Type': 'text/html' }}
+  return new Response(body, headers)
+}
+
+const cached = request => {
   const url = new URL(request.url)
-  
-  return caches.match(request).then(response => {
-    if (response) return response
-    return dbGet(url.pathname, request)
+
+  return new Promise((resolve, reject) => {
+    return caches.match(request).then(response => {
+      if (response) return resolve(response)
+      return dbGet(url.pathname, request)
+    }).then(content => resolve(respond(content)))
   })
 }
 
-const posted = async request => {
+const posted = request => {
   return new Promise((resolve, reject) => {
     if (request.method === 'POST') {
       return request.formData().then(data => {
@@ -42,7 +48,7 @@ const posted = async request => {
         const body = data.get('body')
 
         return dbSet(title, body)
-      }).then(body => resolve(new Response(body)))
+      }).then(body => resolve(respond(body)))
     }
     return reject(request)
   })
@@ -56,15 +62,11 @@ const form = contents => {
   </form>`
 }
 
-const create = async request => {
+const create = request => {
   return new Promise((resolve, reject) => {
     const url = new URL(request.url)
     if (url.searchParams.get('edit')) {
-      return resolve(
-        new Response(form(null),
-          { headers: { 'Content-Type': 'text/html' }}
-        )
-      )
+      return resolve(respond(form(null)))
     }
      
     return reject(request)
