@@ -73,7 +73,7 @@ const form = contents => {
      <input class="db ma3"
        id="body" name="body"
        type="text-area"
-       value=${contents}/>
+       value="${contents}"/>
      <input type="submit" value="submit"/>
   </form>`
 }
