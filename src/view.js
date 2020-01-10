@@ -10,10 +10,12 @@ const template = (url, child) => {
       </head>
       <body class="bg-washed-green">
         <nav class="bg-light-green">
-          <a class="link dim mid-gray f6 f5-ns dib mv4 mh5"
+        <a class="link dim mid-gray f6 f5-ns dib mv4 mh5"
+            href="/index">index</a>
+          <a class="link dim mid-gray f6 f5-ns dib mv4"
             href="${url}">edit</a>
         </nav>
-        <section class="mid-gray mh6 mv4 f5 lh-copy">
+        <section class="mid-gray mh5 mv4 f5 lh-copy">
           ${child()}
         </section>
       </body>
@@ -31,6 +33,8 @@ const form = (url, contents) => {
       </head>
       <body class="bg-washed-green">
         <nav class="flex justify-between bg-light-green mid-gray">
+          <a class="link dim mid-gray f6 f5-ns dib mv4 mh5"
+              href="/index">index</a>
           <p class="mv4 mh5">
             editing page:
             <a class="link" href=${url.pathname}>
