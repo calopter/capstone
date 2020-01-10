@@ -16,8 +16,8 @@ const dbGet = (path, rejection) => {
 const dbRead = path => {
   return new Promise(resolve => {
     db.get(path, (err, nodes) => {
-      if (err) return resolve(null)
-      if (!nodes[0]) return resolve(null)
+      if (err) return resolve('')
+      if (!nodes[0]) return resolve('')
       return resolve(nodes[0].value)
     })
   })

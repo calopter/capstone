@@ -43,7 +43,7 @@ const newForm = request => {
     if (url.searchParams.get('edit')) {
       return resolve(
         dbRead(url.pathname)
-          .then(content => respond(form(content), url))
+          .then(content => respond(form(url, content), url))
       )
     }
      

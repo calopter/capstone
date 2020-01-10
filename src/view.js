@@ -27,21 +27,32 @@ const template = (url, child) => {
   `
 }
 
-const form = contents => {
+const form = (url, contents) => {
   return `
-    <form class="pa4 black-80" method="post">
-      <div class="flex flex-wrap justify-center h-75">
-        <textarea class="input-reset dib border-box ba
-            b--black-20 pa2 br2 mb2 h-100 w-100"
-          id="body" name="body">
-        </textarea>
-        <button class="f6 w-third h-2 grow br-pill ba bw1 ph3 pv2 mb2 db mid-gray"
+    <section>
+      <header class="flex justify-between ph2 mh3 ba b--black-20">
+        <p class="pv2 ml3 h-75">
+          editing page:
+          <a class="link" href=${url.pathname}>
+            ${url.pathname.slice(1)}
+          </a>
+        </p>
+        <button class="f6 w-third h-75 grow br-pill ba bw1
+          ph3 pv2 ma3 bg-washed-green dim mid-gray"
           type="submit"/>submit</button>
+        </header>
+      <form class="pt2 black-80" method="post">
+        <div class="flex flex-wrap justify-center h-75">
+          <textarea class="bg-washed-green input-reset dib border-box ba
+              b--black-20 pa2 br2 h-100 w-100"
+            id="body" name="body" autofocus>
+          </textarea>
         </div>
         <script>
           document.getElementById("body").value = "${contents}"
         </script>
-    </form>
+      </form>
+    <section>
   `
 }
 
