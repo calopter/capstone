@@ -1,5 +1,5 @@
 {
-  "background_color": "blue",
+  "background_color": "#9eebcf",
   "description": "a p2p wiki over dat://",
   "display": "standalone",
   "icons": [
