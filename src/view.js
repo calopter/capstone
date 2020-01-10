@@ -1,48 +1,48 @@
-const html = require('choo/html')
-
-module.exports = (state, emit) => {
-  const onSubmit = e => {
-    e.preventDefault()
-    const input = {}
-    const data = new FormData(e.currentTarget).entries()
-    for(const [key, value] of data) input[key] = value
-    
-    console.log(input)
-    emit('content-submitted', input)
-  }
-  
-  const onLookup = e => {
-    e.preventDefault()
-    const title = new FormData(e.currentTarget).values().next().value
-    emit('lookup', title)
-  }
-  
-  return html`
-    <body class="bg-light-green">
-      <main class="ma6">
-        <h1 class="f6-l fw6 ttu tracked">${state.body}</h1>
-        <button
-          class="f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"
-          onclick=${() => emit('stamp', (new Date).toTimeString())}>stamp</button>
-        <button
-          class="ph3 f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"
-          onclick=${() => emit('refresh')}>refresh</button>
-        <form class="pa4 black-80" onsubmit=${onLookup}>
-          <fieldset class="ba b--transparent ph0 mh0">
-            <input class="ma2 ba w-100 pa3" name="title" type="text"/>
-            <input type="submit" value="lookup"
-              class="f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"/>
-          </fieldset>
-        </form>
-        <form class="pa4 black-80" onsubmit=${onSubmit}>
-          <fieldset class="ba b--transparent ph0 mh0">
-            <input class="ma2 ba w-100 pa3" name="title" type="text"/>
-            <input class="ma2 ba w-100 pa3" name="content" type="text-area"/>
-            <input type="submit" value="submit"
-              class="f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"/>
-          </fieldset>
-        </form>
-      </main>
-    </body>
+const template = (url, child) => {
+  url = url.toString()
+  if (!url.match(/\?edit=true/)) url += '?edit=true'
+  return `
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="manifest" href="manifest.webmanifest">
+        <link rel="stylesheet" type="text/css" href="src/tachyons.min.css">
+      </head>
+      <body class="bg-washed-green">
+        <nav class="bg-light-green pa3 pa4-ns">
+          <a class="link dim mid-gray f6 f5-ns dib mr3"
+            href="/hello">hello</a>
+          <a class="link dim mid-gray f6 f5-ns dib mr3"
+            href="/index">index</a>
+          <a class="link dim mid-gray f6 f5-ns dib mr3"
+            href="https://ddg.gg">external page</a>
+          <a class="link dim mid-gray f6 f5-ns dib mr3"
+            href="${url}">edit</a>
+        </nav>
+        <section class="mid-gray ma2 f5 lh-copy">
+          ${child()}
+        </section>
+      </body>
+    </html>
   `
 }
+
+const form = contents => {
+  return `
+    <form class="pa4 black-80" method="post">
+      <div class="flex flex-wrap justify-center h-75">
+        <textarea class="input-reset dib border-box ba
+            b--black-20 pa2 br2 mb2 h-100 w-100"
+          id="body" name="body">
+        </textarea>
+        <button class="f6 w-third h-2 grow br-pill ba bw1 ph3 pv2 mb2 db mid-gray"
+          type="submit"/>submit</button>
+        </div>
+        <script>
+          document.getElementById("body").value = "${contents}"
+        </script>
+    </form>
+  `
+}
+
+module.exports = { template, form }

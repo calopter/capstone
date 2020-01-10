@@ -5,25 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel index.html",
-    "build": "parcel build index.html",
-    "deploy": "npm run-script build && surge -p dist -d https://trie.surge.sh",
-    "upload": "surge -p dist -d https://trie.surge.sh"
+    "start": "python -m SimpleHTTPServer",
+    "build": "browserify ./src/service-worker.js > sw.js",
+    "deploy": "npm run-script build && surge -p . -d https://trie.surge.sh",
+    "upload": "surge -p . -d https://trie.surge.sh"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "browserslist": [
-    "last 1 Chrome version"
-  ],
   "dependencies": {
-    "choo": "^7.0.0",
     "hyperdb": "^3.5.0",
     "random-access-idb": "^1.2.1"
   },
   "devDependencies": {
-    "parcel": "^1.12.4",
-    "parcel-plugin-sw-precache": "^1.1.1",
+    "browserify": "^16.5.0",
+    "browserify-css": "^0.15.0",
     "surge": "^0.21.3",
     "tachyons": "^4.10.0"
   }

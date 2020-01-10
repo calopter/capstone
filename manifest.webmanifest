@@ -1,10 +1,10 @@
 {
-  "background_color": "blue",
+  "background_color": "#9eebcf",
   "description": "a p2p wiki over dat://",
   "display": "standalone",
   "icons": [
     {
-      "src": "fox-icon.png",
+      "src": "assets/fox-icon.png",
       "sizes": "192x192",
       "type": "image/png"
     }
