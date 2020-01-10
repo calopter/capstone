@@ -1,5 +1,6 @@
 const hyperdb = require('hyperdb')
 const rai = require('random-access-idb')
+const form = require('./form')
 
 const db = hyperdb(rai('./my.db'), {valueEncoding: 'utf-8'})
 
@@ -67,17 +68,6 @@ const write = request => {
   })
 }
 
-const form = contents => {
-  return `<form method="post">
-     <label for="body">body:</label>
-     <input class="db ma3"
-       id="body" name="body"
-       type="text-area"
-       value="${contents}"/>
-     <input type="submit" value="submit"/>
-  </form>`
-}
-
 const newForm = request => {
   const url = new URL(request.url)
   
@@ -127,8 +117,8 @@ self.addEventListener('install', e => {
       return cache.addAll([
         '/',
         'index.html',
-        'bundle.js',
-        'tachyons.min.css',
+        'src/index.js',
+        'src/tachyons.min.css',
         'manifest.webmanifest',
         'assets/fox-icon.png',
       ])

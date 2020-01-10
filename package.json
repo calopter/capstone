@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "python -m SimpleHTTPServer",
-    "build": "browserify service-worker.js > sw.js",
+    "build": "browserify ./src/service-worker.js > sw.js",
     "deploy": "npm run-script build && surge -p . -d https://trie.surge.sh",
     "upload": "surge -p . -d https://trie.surge.sh"
   },
