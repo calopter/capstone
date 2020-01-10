@@ -25,12 +25,11 @@ const read = request => {
 const write = request => {
   return new Promise((resolve, reject) => {
     if (request.method === 'POST') {
+      const title = new URL(request.url).pathname
       return request.formData().then(data => {
-        const title = new URL(request.url).pathname
         const body = data.get('body')
-
         return dbSet(title, body)
-      }).then(body => resolve(respond(body, request.url)))
+      }).then(body => resolve(Response.redirect(title)))
     }
     return reject(request)
   })
@@ -51,22 +50,6 @@ const newForm = request => {
   })
 }
 
-const create = request => {
-  const {
-    cache, credentials, headers, integrity, method,
-    mode, redirect, referrer, referrerPolicy, url, body
-  } = request
-
-  const init = {
-    cache, credentials, headers, integrity, method,
-    mode: 'same-origin', redirect, referrer, referrerPolicy, body
-  }
-  
-  // add ?edit=true to url
-  const newReq = new Request(url + '?edit=true', init)
-  
-  // send to newForm
-  return newForm(newReq)
-}
+const create = ({ url }) => Response.redirect(url + '?edit=true')
 
 module.exports = { write, newForm, read, create }

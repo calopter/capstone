@@ -39,9 +39,10 @@ const form = (url, contents) => {
         </p>
         <button class="f6 w-third h-75 grow br-pill ba bw1
           ph3 pv2 ma3 bg-washed-green dim mid-gray"
-          type="submit"/>submit</button>
+          type="submit"
+          form="content"/>submit</button>
         </header>
-      <form class="pt2 black-80" method="post">
+      <form class="pt2 black-80" id="content" method="post">
         <div class="flex flex-wrap justify-center h-75">
           <textarea class="bg-washed-green input-reset dib border-box ba
               b--black-20 pa2 br2 h-100 w-100"
