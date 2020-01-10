@@ -1,14 +1,16 @@
 const hyperdb = require('hyperdb')
 const rai = require('random-access-idb')
+const { Remarkable } = require('remarkable')
 
 const db = hyperdb(rai('trieWiki'), {valueEncoding: 'utf-8'})
+const md = new Remarkable()
 
 const dbGet = (path, rejection) => {
   return new Promise((resolve, reject) => {
     db.get(path, (err, nodes) => {
       if (err) return reject(err)
       if (!nodes[0]) return reject(rejection)
-      resolve(nodes[0].value)
+      resolve(md.render(nodes[0].value))
     })
   })
 }
@@ -16,8 +18,8 @@ const dbGet = (path, rejection) => {
 const dbRead = path => {
   return new Promise(resolve => {
     db.get(path, (err, nodes) => {
-      if (err) return resolve(null)
-      if (!nodes[0]) return resolve(null)
+      if (err) return resolve('')
+      if (!nodes[0]) return resolve('')
       return resolve(nodes[0].value)
     })
   })

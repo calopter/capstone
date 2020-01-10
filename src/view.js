@@ -9,17 +9,11 @@ const template = (url, child) => {
         <link rel="stylesheet" type="text/css" href="src/tachyons.min.css">
       </head>
       <body class="bg-washed-green">
-        <nav class="bg-light-green pa3 pa4-ns">
-          <a class="link dim mid-gray f6 f5-ns dib mr3"
-            href="/hello">hello</a>
-          <a class="link dim mid-gray f6 f5-ns dib mr3"
-            href="/index">index</a>
-          <a class="link dim mid-gray f6 f5-ns dib mr3"
-            href="https://ddg.gg">external page</a>
-          <a class="link dim mid-gray f6 f5-ns dib mr3"
+        <nav class="bg-light-green">
+          <a class="link dim mid-gray f6 f5-ns dib mv4 mh5"
             href="${url}">edit</a>
         </nav>
-        <section class="mid-gray ma2 f5 lh-copy">
+        <section class="mid-gray mh6 mv4 f5 lh-copy">
           ${child()}
         </section>
       </body>
@@ -27,21 +21,46 @@ const template = (url, child) => {
   `
 }
 
-const form = contents => {
+const form = (url, contents) => {
   return `
-    <form class="pa4 black-80" method="post">
-      <div class="flex flex-wrap justify-center h-75">
-        <textarea class="input-reset dib border-box ba
-            b--black-20 pa2 br2 mb2 h-100 w-100"
-          id="body" name="body">
-        </textarea>
-        <button class="f6 w-third h-2 grow br-pill ba bw1 ph3 pv2 mb2 db mid-gray"
-          type="submit"/>submit</button>
-        </div>
-        <script>
-          document.getElementById("body").value = "${contents}"
-        </script>
-    </form>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="manifest" href="manifest.webmanifest">
+        <link rel="stylesheet" type="text/css" href="src/tachyons.min.css">
+      </head>
+      <body class="bg-washed-green">
+        <nav class="flex justify-between bg-light-green mid-gray">
+          <p class="mv4 mh5">
+            editing page:
+            <a class="link" href=${url.pathname}>
+              ${url.pathname.slice(1)}
+            </a>
+          </p>
+          <div class="flex flex-column justify-around w-25 mh5 min-h-100">
+            <button class="f6 w-100 border-box grow br-pill ba bw1
+              ph3 pv2 h-50 mr4 bg-washed-green dim mid-gray"
+              type="submit"
+              form="content"/>
+                submit
+            </button>
+          </div>
+        </nav>
+        <section>
+          <form class="pt3 black-80" id="content" method="post">
+            <div class="flex flex-wrap justify-center h-75">
+              <textarea class="bg-washed-green input-reset dib
+                border-box ba b--black-20 pa2 br2 mh2 h-100 w-100"
+                id="body" name="body" autofocus>
+              </textarea>
+            </div>
+            <script>
+              document.getElementById("body").value = "${contents}"
+            </script>
+          </form>
+        <section>
+      </body>
+    </html>
   `
 }
 

@@ -1,14 +1,16 @@
 const { template, form } = require('./view')
 const { dbGet, dbRead, dbSet } = require('./db')
 
-dbSet('/hello', "<a href='hello?edit=true'>hello world from db</a>")
-dbSet('/index', "<a href='/new'>some new content</a>")
-dbSet('/hi', 'hi')
-dbSet('empty', null)
+dbSet('/index', "[some new content](/new)")
 
-const respond = (body, url) => {
+const respondMD = (url, body) => {
   const headers = { headers: { 'Content-Type': 'text/html' }}
   return new Response(template(url, () => body), headers)
+}
+
+const respondForm = (url, content) => {
+  const headers = { headers: { 'Content-Type': 'text/html' }}
+  return new Response(form(url, content), headers)
 }
 
 const read = request => {
@@ -18,19 +20,18 @@ const read = request => {
     return caches.match(request).then(response => {
       if (response) return resolve(response)
       return dbGet(url.pathname, request)
-    }).then(content => resolve(respond(content, url))).catch(reject)
+    }).then(content => resolve(respondMD(url, content))).catch(reject)
   })
 }
 
 const write = request => {
   return new Promise((resolve, reject) => {
     if (request.method === 'POST') {
+      const title = new URL(request.url).pathname
       return request.formData().then(data => {
-        const title = new URL(request.url).pathname
         const body = data.get('body')
-
         return dbSet(title, body)
-      }).then(body => resolve(respond(body, request.url)))
+      }).then(body => resolve(Response.redirect(title)))
     }
     return reject(request)
   })
@@ -43,7 +44,7 @@ const newForm = request => {
     if (url.searchParams.get('edit')) {
       return resolve(
         dbRead(url.pathname)
-          .then(content => respond(form(content), url))
+          .then(content => respondForm(url, content))
       )
     }
      
@@ -51,22 +52,6 @@ const newForm = request => {
   })
 }
 
-const create = request => {
-  const {
-    cache, credentials, headers, integrity, method,
-    mode, redirect, referrer, referrerPolicy, url, body
-  } = request
-
-  const init = {
-    cache, credentials, headers, integrity, method,
-    mode: 'same-origin', redirect, referrer, referrerPolicy, body
-  }
-  
-  // add ?edit=true to url
-  const newReq = new Request(url + '?edit=true', init)
-  
-  // send to newForm
-  return newForm(newReq)
-}
+const create = ({ url }) => Response.redirect(url + '?edit=true')
 
 module.exports = { write, newForm, read, create }
