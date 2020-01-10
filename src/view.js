@@ -32,16 +32,15 @@ const form = (url, contents) => {
         <link rel="stylesheet" type="text/css" href="src/tachyons.min.css">
       </head>
       <body class="bg-washed-green">
-        <nav class="flex justify-between bg-light-green mid-gray">
-          <a class="link dim mid-gray f6 f5-ns dib mv4 mh5"
+        <nav class="flex justify-between bg-light-green mid-gray mw-100">
+          <a class="link dim mid-gray f6 f5-ns dib mv4 ml5"
               href="/index">index</a>
-          <p class="mv4 mh5">
-            editing page:
-            <a class="link" href=${url.pathname}>
+          <p class="f6 mv4">
+            editing: <a class="link" href=${url.pathname}>
               ${url.pathname.slice(1)}
             </a>
           </p>
-          <div class="flex flex-column justify-around w-25 mh5 min-h-100">
+          <div class="flex flex-column justify-around w-25 mr5 min-h-100">
             <button class="f6 w-100 border-box grow br-pill ba bw1
               ph3 pv2 h-50 mr4 bg-washed-green dim mid-gray"
               type="submit"
