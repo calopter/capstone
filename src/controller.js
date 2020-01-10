@@ -1,14 +1,16 @@
 const { template, form } = require('./view')
 const { dbGet, dbRead, dbSet } = require('./db')
 
-dbSet('/hello', "<a href='hello?edit=true'>hello world from db</a>")
-dbSet('/index', "<a href='/new'>some new content</a>")
-dbSet('/hi', 'hi')
-dbSet('empty', null)
+dbSet('/index', "[some new content](/new)")
 
-const respond = (body, url) => {
+const respondMD = (url, body) => {
   const headers = { headers: { 'Content-Type': 'text/html' }}
   return new Response(template(url, () => body), headers)
+}
+
+const respondForm = (url, content) => {
+  const headers = { headers: { 'Content-Type': 'text/html' }}
+  return new Response(form(url, content), headers)
 }
 
 const read = request => {
@@ -18,7 +20,7 @@ const read = request => {
     return caches.match(request).then(response => {
       if (response) return resolve(response)
       return dbGet(url.pathname, request)
-    }).then(content => resolve(respond(content, url))).catch(reject)
+    }).then(content => resolve(respondMD(url, content))).catch(reject)
   })
 }
 
@@ -42,7 +44,7 @@ const newForm = request => {
     if (url.searchParams.get('edit')) {
       return resolve(
         dbRead(url.pathname)
-          .then(content => respond(form(url, content), url))
+          .then(content => respondForm(url, content))
       )
     }
      
