@@ -1,4 +1,4 @@
-module.exports = contents => {
+const form = contents => {
   return `<form method="post">
      <label for="body">body:</label>
      <input class="db ma3"
@@ -9,3 +9,4 @@ module.exports = contents => {
   </form>`
 }
 
+module.exports = { form }
