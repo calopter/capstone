@@ -1,4 +1,4 @@
-const { form } = require('./view')
+const { template, form } = require('./view')
 const { dbGet, dbRead, dbSet } = require('./db')
 
 dbSet('/hello', "<a href='hello?edit=true'>hello world from db</a>")
@@ -6,9 +6,9 @@ dbSet('/index', "<a href='/new'>some new content</a>")
 dbSet('/hi', 'hi')
 dbSet('empty', null)
 
-const respond = body => {
+const respond = (body, url) => {
   const headers = { headers: { 'Content-Type': 'text/html' }}
-  return new Response(body, headers)
+  return new Response(template(url, () => body), headers)
 }
 
 const read = request => {
@@ -18,7 +18,7 @@ const read = request => {
     return caches.match(request).then(response => {
       if (response) return resolve(response)
       return dbGet(url.pathname, request)
-    }).then(content => resolve(respond(content))).catch(reject)
+    }).then(content => resolve(respond(content, url))).catch(reject)
   })
 }
 
@@ -30,7 +30,7 @@ const write = request => {
         const body = data.get('body')
 
         return dbSet(title, body)
-      }).then(body => resolve(respond(body)))
+      }).then(body => resolve(respond(body, request.url)))
     }
     return reject(request)
   })
@@ -43,7 +43,7 @@ const newForm = request => {
     if (url.searchParams.get('edit')) {
       return resolve(
         dbRead(url.pathname)
-          .then(content => respond(form(content)))
+          .then(content => respond(form(content), url))
       )
     }
      
