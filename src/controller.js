@@ -42,7 +42,14 @@ const newForm = request => {
     if (url.searchParams.get('edit')) {
       return resolve(
         dbRead(url.pathname)
-          .then(content => respondForm(url, content))
+          .then(content => {
+            if (!content) {
+              return respondForm(url,
+                `# ${url.pathname.slice(1)}\n\n***`
+              )
+            }
+            return respondForm(url, content)
+          })
       )
     }
      

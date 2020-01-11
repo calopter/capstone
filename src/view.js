@@ -15,7 +15,7 @@ const template = (url, child) => {
           <a class="link dim mid-gray f6 f5-ns dib mv4"
             href="${url}">edit</a>
         </nav>
-        <section class="mid-gray mh5 mv4 f5 lh-copy">
+        <section class="mid-gray mh3 mv4 f5 lh-copy">
           ${child()}
         </section>
       </body>

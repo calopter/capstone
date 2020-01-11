@@ -34,8 +34,8 @@ const dbSet = (key, val) => {
   })
 }
 
-dbSet('/index', '[docs](/docs)')
-dbSet('/docs', '[markdown syntax](/markdown)')
+dbSet('/index', '# index\n\n***\n\n- [docs](/docs)')
+dbSet('/docs', '# documentation\n\n***\n\n- [markdown syntax](/markdown)')
 fetch('../doc/md-example.md')
   .then(resp => resp.text())
   .then(data => {
