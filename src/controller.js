@@ -1,8 +1,6 @@
 const { template, form } = require('./view')
 const { dbGet, dbRead, dbSet } = require('./db')
 
-dbSet('/index', "[some new content](/new)")
-
 const respondMD = (url, body) => {
   const headers = { headers: { 'Content-Type': 'text/html' }}
   return new Response(template(url, () => body), headers)

@@ -10,7 +10,7 @@ const template = (url, child) => {
       </head>
       <body class="bg-washed-green">
         <nav class="bg-light-green">
-        <a class="link dim mid-gray f6 f5-ns dib mv4 mh5"
+        <a class="link dim mid-gray f6 f5-ns dib mv4 ml3 mr4"
             href="/index">index</a>
           <a class="link dim mid-gray f6 f5-ns dib mv4"
             href="${url}">edit</a>
@@ -33,16 +33,16 @@ const form = (url, contents) => {
       </head>
       <body class="bg-washed-green">
         <nav class="flex justify-between bg-light-green mid-gray mw-100">
-          <a class="link dim mid-gray f6 f5-ns dib mv4 ml5"
+          <a class="link dim mid-gray f6 f5-ns dib mv4 ml3"
               href="/index">index</a>
           <p class="f6 mv4">
             editing: <a class="link" href=${url.pathname}>
               ${url.pathname.slice(1)}
             </a>
           </p>
-          <div class="flex flex-column justify-around w-25 mr5 min-h-100">
+          <div class="flex flex-column justify-around w-25 mr3 min-h-100">
             <button class="f6 w-100 border-box grow br-pill ba bw1
-              ph3 pv2 h-50 mr4 bg-washed-green dim mid-gray"
+              ph3 pv2 h-50 mr4-ns bg-washed-green dim mid-gray"
               type="submit"
               form="content"/>
                 submit
@@ -54,13 +54,9 @@ const form = (url, contents) => {
             <div class="flex flex-wrap justify-center h-75">
               <textarea class="bg-washed-green input-reset dib
                 border-box ba b--black-20 pa2 br2 mh2 h-100 w-100"
-                id="body" name="body" autofocus>
-              </textarea>
+                id="body" name="body" autofocus>${contents}</textarea>
             </div>
-            <script>
-              document.getElementById("body").value = "${contents}"
-            </script>
-          </form>
+         </form>
         <section>
       </body>
     </html>
