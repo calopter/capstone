@@ -35,26 +35,17 @@ const write = async request => {
   catch (err) { throw(request) }
 }
 
-const newForm = request => {
+const newForm = async request => {
   const url = new URL(request.url)
-  
-  return new Promise((resolve, reject) => {
-    if (url.searchParams.get('edit')) {
-      return resolve(
-        dbRead(url.pathname)
-          .then(content => {
-            if (!content) {
-              return respondForm(url,
-                `# ${url.pathname.slice(1)}\n\n***`
-              )
-            }
-            return respondForm(url, content)
-          })
-      )
-    }
-     
-    return reject(request)
-  })
+  if (!url.searchParams.get('edit')) throw(request)
+
+  try {
+    const content = await dbRead(url.pathname)
+    
+    if (content) return respondForm(url, content)
+    return respondForm(url, `# ${url.pathname.slice(1)}\n\n***`)
+  }
+  catch (err) { throw(request) }
 }
 
 const create = ({ url }) => Response.redirect(url + '?edit=true')
