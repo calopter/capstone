@@ -11,15 +11,17 @@ const respondForm = (url, content) => {
   return new Response(form(url, content), headers)
 }
 
-const read = request => {
+const read = async request => {
   const url = new URL(request.url)
-
-  return new Promise((resolve, reject) => {
-    return caches.match(request).then(response => {
-      if (response) return resolve(response)
-      return dbGet(url.pathname, request)
-    }).then(content => resolve(respondMD(url, content))).catch(reject)
-  })
+  try {
+    const response = await caches.match(request)
+    if (response) return response
+    const content = await dbGet(url.pathname, request)
+    return respondMD(url, content)
+  }
+  catch (err) {
+    throw(request)
+  }
 }
 
 const write = request => {
