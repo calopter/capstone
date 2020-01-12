@@ -1,13 +1,6 @@
-const { write, newForm, readOrCreate } = require('./controller')
+const route = require('./router')
 
-self.addEventListener('fetch', async e => {
-  e.respondWith(
-    write(e.request)
-      .catch(newForm)
-      .catch(readOrCreate)
-      // .catch(fetch)
-  )
-})
+self.addEventListener('fetch', route)
 
 self.addEventListener('install', e => {
   e.waitUntil(
