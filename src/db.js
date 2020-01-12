@@ -34,4 +34,12 @@ const dbSet = (key, val) => {
   })
 }
 
+dbSet('/index', '# index\n\n***\n\n- [docs](/docs)')
+dbSet('/docs', '# documentation\n\n***\n\n- [markdown syntax](/markdown)')
+fetch('../doc/md-example.md')
+  .then(resp => resp.text())
+  .then(data => {
+    dbSet('/markdown', data)
+  })
+
 module.exports = { dbGet, dbRead, dbSet, }
