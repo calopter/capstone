@@ -19,22 +19,20 @@ const read = async request => {
     const content = await dbGet(url.pathname, request)
     return respondMD(url, content)
   }
-  catch (err) {
-    throw(request)
-  }
+  catch (err) { throw(request) }
 }
 
-const write = request => {
-  return new Promise((resolve, reject) => {
-    if (request.method === 'POST') {
-      const title = new URL(request.url).pathname
-      return request.formData().then(data => {
-        const body = data.get('body')
-        return dbSet(title, body)
-      }).then(body => resolve(Response.redirect(title)))
-    }
-    return reject(request)
-  })
+const write = async request => {
+  if (!(request.method === 'POST')) throw(request)
+
+  try {
+    const title = new URL(request.url).pathname
+    const data = await request.formData()
+    await dbSet(title, data.get('body'))
+
+    return Response.redirect(title)
+  }
+  catch (err) { throw(request) }
 }
 
 const newForm = request => {
