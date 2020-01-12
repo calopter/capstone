@@ -1,11 +1,10 @@
-const { write, newForm, read, create } = require('./controller')
+const { write, newForm, readOrCreate } = require('./controller')
 
 self.addEventListener('fetch', async e => {
   e.respondWith(
     write(e.request)
       .catch(newForm)
-      .catch(read)
-      .catch(create)
+      .catch(readOrCreate)
       // .catch(fetch)
   )
 })

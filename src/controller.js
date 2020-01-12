@@ -11,17 +11,6 @@ const respondForm = (url, content) => {
   return new Response(form(url, content), headers)
 }
 
-const read = async request => {
-  const url = new URL(request.url)
-  try {
-    const response = await caches.match(request)
-    if (response) return response
-    const content = await dbGet(url.pathname, request)
-    return respondMD(url, content)
-  }
-  catch (err) { throw(request) }
-}
-
 const write = async request => {
   if (!(request.method === 'POST')) throw(request)
 
@@ -48,6 +37,28 @@ const newForm = async request => {
   catch (err) { throw(request) }
 }
 
+const readCache = async request => {
+  try {
+    const response = await caches.match(request)
+    if (!response) throw(request)
+    return response
+  }
+  catch (err) { throw(request) }
+}
+
+const readDb = async request => {
+  const url = new URL(request.url)
+
+  try {
+    const content = await dbGet(url.pathname, request)
+    return respondMD(url, content)
+  }
+  catch (err) { throw(request) }
+}
+
 const create = ({ url }) => Response.redirect(url + '?edit=true')
 
-module.exports = { write, newForm, read, create }
+const readOrCreate = request =>
+  readCache(request).catch(readDb).catch(create)
+
+module.exports = { write, newForm, readOrCreate }
