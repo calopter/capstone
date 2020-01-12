@@ -1,8 +1,13 @@
 const { write, newForm, readOrCreate } = require('./controller')
 
+const post = ({ method }) => method === 'POST'
+const edit = ({ url }) => new URL(url).searchParams.get('edit')
+const base = (_) => true
+
 const routes = [
-  [ ({ method }) => method === 'POST', write ],
-  [ ({ url }) => new URL(url).searchParams.get('edit'), newForm ],  [ (_) => true, readOrCreate],
+  [ post, write ],
+  [ edit, newForm ],
+  [ base, readOrCreate],
 ]
 
 const route = e => {
