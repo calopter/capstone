@@ -4,7 +4,6 @@ self.addEventListener('fetch', route)
 
 self.addEventListener('message', msg => {
   const file = msg.data
-  console.log(file)
   
   caches.open('trieWiki').then(cache => {
     const req = new Request(file.name)

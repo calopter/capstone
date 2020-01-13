@@ -61,6 +61,8 @@ const form = (url, contents) => {
 const fileInput = document.getElementById('file')
 fileInput.addEventListener('change', () => {
   const file = fileInput.files[0]
+  const md = "\\n\\n![" + file.name + "](" + file.name + ")"
+  document.getElementById('body').value += md 
   navigator.serviceWorker.controller.postMessage(file)
 })
             </script>
