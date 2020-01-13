@@ -8,7 +8,7 @@ const base = (_) => true
 const routes = [
   [ post, write ],
   [ edit, newForm ],
-  [ image, fetch ],
+  [ image, req => caches.match(req).catch(fetch) ],
   [ base, readOrCreate ],
 ]
 
