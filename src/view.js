@@ -51,11 +51,19 @@ const form = (url, contents) => {
         </nav>
         <section>
           <form class="pt3 black-80" id="content" method="post">
+            <input type="file" id="file"/>
             <div class="flex flex-wrap justify-center h-75">
               <textarea class="bg-washed-green input-reset dib
                 border-box ba b--black-20 pa2 br2 mh2 h-100 w-100"
                 id="body" name="body" autofocus>${contents}</textarea>
             </div>
+            <script>
+const fileInput = document.getElementById('file')
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0]
+  navigator.serviceWorker.controller.postMessage(file)
+})
+            </script>
          </form>
         <section>
       </body>
