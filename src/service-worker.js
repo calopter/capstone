@@ -19,7 +19,7 @@ self.addEventListener('install', e => {
       return cache.addAll([
         '/',
         'index.html',
-        'src/index.js',
+        'index.js',
         'src/tachyons.min.css',
         'manifest.webmanifest',
         'assets/fox-icon.png',

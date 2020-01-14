@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "python -m SimpleHTTPServer",
-    "build": "browserify ./src/service-worker.js > sw.js",
+    "build": "webpack",
     "deploy": "npm run-script build && surge -p . -d https://trie.surge.sh",
     "upload": "surge -p . -d https://trie.surge.sh"
   },
@@ -14,14 +15,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@geut/discovery-swarm-webrtc": "^2.2.5",
     "hyperdb": "^3.5.0",
     "random-access-idb": "^1.2.1",
     "remarkable": "^2.0.0"
   },
   "devDependencies": {
-    "browserify": "^16.5.0",
-    "browserify-css": "^0.15.0",
     "surge": "^0.21.3",
-    "tachyons": "^4.10.0"
+    "tachyons": "^4.10.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }
