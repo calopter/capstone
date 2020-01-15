@@ -1,27 +1,36 @@
-const swarm = require('@geut/discovery-swarm-webrtc')
-const signalhub = require('signalhubws')
-const pump = require('pump')
-
 const hyperdb = require('hyperdb')
 const rai = require('random-access-idb')
+const DiscoverySwarmWeb = require('discovery-swarm-web')
 
-const db = hyperdb(rai('test'), {valueEncoding: 'utf-8'})
+// simulate different user-device's Storages:
+let name //= localStorage.getItem('trieWiki-rai-name')
+// if (!name) {
+  name = `trieWiki-${Date.now()}`
+//   localStorage.setItem('trieWiki-rai-name', name)
+// }
+console.log('using rai name:', name)
+
+// definitely get that key tho:
+const key = localStorage.getItem('trieWiki-hyperdb-key')
+console.log('using key', key)
+
+const db = hyperdb(rai(name), key, {valueEncoding: 'utf-8'})
 const now = '/hello'+Date.now()
-db.put(now, 'world')
 
-const sw = swarm({
-  stream: () => db.replicate({ live: true }),
-})
+db.on('ready', () => {
+  if (!key) localStorage.setItem('trieWiki-hyperdb-key', db.key.toString('hex')) 
+  console.log('hyperdb key:', db.key.toString('hex'))
 
-sw.join(
-  signalhub('hello', ['wss://signalhubws-olaf.glitch.me']),
-  { config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302'}]}}
-)
+  db.put(now, 'world', err => {
+    if (err) return console.log(err)
+    
+    // const swarm = DiscoverySwarmWeb({
+    //   stream: () => db.replicate()
+    // })
 
-sw.on('connection', conn => {
-  console.log('connected', conn)
-  // pump(conn, db.replicate({live: true}), conn, err => { throw err})//console.log)
-  setTimeout(db.get(now, console.log), 2000)
+    // swarm.join(db.discoveryKey)
+    db.get(now, (err, nodes) => console.log('read:', now, nodes[0].value))
+  })
 })
 
 console.log(db)
