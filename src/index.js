@@ -1,7 +1,7 @@
 const swarm = require('@geut/discovery-swarm-webrtc')
 
 const sw = swarm({
-  bootstrap: ['172.24.47.182:4000']
+  bootstrap: ['localhost:4000']
 })
 
 sw.join(Buffer.from('some-topic'))
