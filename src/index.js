@@ -1,14 +1,30 @@
 const swarm = require('@geut/discovery-swarm-webrtc')
+const signalhub = require('signalhubws')
+const pump = require('pump')
+
+const hyperdb = require('hyperdb')
+const rai = require('random-access-idb')
+
+const db = hyperdb(rai('test'), {valueEncoding: 'utf-8'})
+const now = '/hello'+Date.now()
+db.put(now, 'world')
 
 const sw = swarm({
-  bootstrap: ['localhost:4000']
+  stream: () => db.replicate({ live: true }),
 })
 
-sw.join(Buffer.from('some-topic'))
+sw.join(
+  signalhub('hello', ['wss://signalhubws-olaf.glitch.me']),
+  { config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302'}]}}
+)
 
-sw.on('connection', peer => {
-  console.log('connected', peer)
+sw.on('connection', conn => {
+  console.log('connected', conn)
+  // pump(conn, db.replicate({live: true}), conn, err => { throw err})//console.log)
+  setTimeout(db.get(now, console.log), 2000)
 })
+
+console.log(db)
 
 if('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

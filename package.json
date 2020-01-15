@@ -15,10 +15,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@geut/discovery-swarm-webrtc": "^2.2.5",
+    "@geut/discovery-swarm-webrtc": "^1.0.1",
     "hyperdb": "^3.5.0",
+    "pump": "^3.0.0",
     "random-access-idb": "^1.2.1",
-    "remarkable": "^2.0.0"
+    "remarkable": "^2.0.0",
+    "signalhubws": "^1.0.12"
   },
   "devDependencies": {
     "surge": "^0.21.3",
