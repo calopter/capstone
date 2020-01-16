@@ -1,6 +1,7 @@
 const hyperdb = require('hyperdb')
 const rai = require('random-access-idb')
-const DiscoverySwarmWeb = require('discovery-swarm-web')
+
+const swarm = require('@geut/discovery-swarm-webrtc')
 
 // simulate different user-device's Storages:
 let name //= localStorage.getItem('trieWiki-rai-name')
@@ -21,15 +22,19 @@ db.on('ready', () => {
   if (!key) localStorage.setItem('trieWiki-hyperdb-key', db.key.toString('hex')) 
   console.log('hyperdb key:', db.key.toString('hex'))
 
-  db.put(now, 'world', err => {
+  db.put(name, `hello world from ${name}`, err => {
     if (err) return console.log(err)
     
-    // const swarm = DiscoverySwarmWeb({
-    //   stream: () => db.replicate()
-    // })
+    const sw = swarm({
+      stream: () => db.replicate({ live: true, userData: JSON.stringify({ key: db.local.key})}),
+      bootstrap: ['localhost:4000']
+    })
 
-    // swarm.join(db.discoveryKey)
-    db.get(now, (err, nodes) => console.log('read:', now, nodes[0].value))
+    sw.join(db.discoveryKey)
+
+    sw.on('connection', conn => console.log('connected:', conn))
+    
+    db.get(name, (err, nodes) => console.log('self-read:', now, nodes[0].value))
   })
 })
 
