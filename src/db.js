@@ -49,7 +49,7 @@ module.exports = async () => {
 
       const sw = swarm({
         stream: () => db.replicate({ live: true, userData: JSON.stringify({ key: db.local.key})}),
-        bootstrap: ['localhost:4000']
+        bootstrap: ['localhost:4000', 'https://geut-webrtc-signal.herokuapp.com/']
       })
 
       sw.join(db.discoveryKey)

@@ -13,12 +13,13 @@ module.exports = (state, emitter) => {
       (data, enc, next) => {
         const { key, value } = data
         state.links.push(`
-          <li><a href=${key.slice(9)}>${key}</a></li>
+          <li><a href="/${key}">${key}</a></li>
         `)
       next()
     })
     
     pump(h, ws, () => console.log('pumped'))
+    emitter.emit('render')
   }
 
   state.links = []
@@ -27,7 +28,7 @@ module.exports = (state, emitter) => {
     state.db = await initDB()
     state.doc = html`
       <div>
-        <a href=${state.db.name}>welcome</a>
+        <a href="/${state.db.name}">welcome</a>
       </div>
     `
     
@@ -37,8 +38,8 @@ module.exports = (state, emitter) => {
   })
 
   emitter.on('navigate', () => {
-    console.log('href:', state.href)
-    state.db.fetch(state.href).then(doc => {
+    console.log('following:', state.params.wildcard)
+    state.db.fetch(state.params.wildcard).then(doc => {
       state.doc = html`${raw(doc)}`
       emitter.emit('render')
     })
