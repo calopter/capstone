@@ -1,4 +1,5 @@
 const html = require('choo/html')
+const raw = require('nanohtml/raw')
 
 module.exports = (state, emit) => {
   const onSubmit = e => {
@@ -18,31 +19,19 @@ module.exports = (state, emit) => {
   }
   
   return html`
-    <body class="bg-light-green">
-      <main class="ma6">
-        <h1 class="f6-l fw6 ttu tracked">${state.body}</h1>
-        <button
-          class="f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"
-          onclick=${() => emit('stamp', (new Date).toTimeString())}>stamp</button>
-        <button
-          class="ph3 f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"
-          onclick=${() => emit('refresh')}>refresh</button>
-        <form class="pa4 black-80" onsubmit=${onLookup}>
-          <fieldset class="ba b--transparent ph0 mh0">
-            <input class="ma2 ba w-100 pa3" name="title" type="text"/>
-            <input type="submit" value="lookup"
-              class="f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"/>
-          </fieldset>
-        </form>
-        <form class="pa4 black-80" onsubmit=${onSubmit}>
-          <fieldset class="ba b--transparent ph0 mh0">
-            <input class="ma2 ba w-100 pa3" name="title" type="text"/>
-            <input class="ma2 ba w-100 pa3" name="content" type="text-area"/>
-            <input type="submit" value="submit"
-              class="f6 grow no-underline br-pill ba bw1 ph3 pv2 mb2 dib light-purple"/>
-          </fieldset>
-        </form>
-      </main>
+    <body class="bg-washed-green">
+      <nav class="bg-light-green">
+        <a class="link dim mid-gray f6 f5-ns dib mv4 ml3 mr4"
+          href="/index">index</a>
+        <a class="link dim mid-gray f6 f5-ns dib mv4"
+          href="#">edit</a>
+      </nav>
+      <section class="mid-gray mh3 mv4 f5 lh-copy">
+        ${state.doc}
+        <ul>
+          ${state.links.map(raw)}
+        </ul>
+      </section>
     </body>
   `
 }

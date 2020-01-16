@@ -4,7 +4,7 @@ const archive = require('./store')
 
 const app = choo()
 app.use(archive)
-app.route('/', main)
+app.route('/*', main)
 app.mount('body')
 
 if('serviceWorker' in navigator) {
