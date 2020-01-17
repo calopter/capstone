@@ -21,7 +21,8 @@
     "choo": "^7.0.0",
     "hyperdb": "^3.5.0",
     "pump": "^3.0.0",
-    "random-access-idb": "^1.2.1"
+    "random-access-idb": "^1.2.1",
+    "remarkable": "^2.0.0"
   },
   "devDependencies": {
     "parcel": "^1.12.4",

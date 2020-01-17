@@ -1,8 +1,10 @@
 const html = require('choo/html')
 const raw = require('nanohtml/raw')
 const pump = require('pump')
+const { Remarkable } = require('remarkable')
 
 const initDB = require('./db')
+const md = new Remarkable()
 
 module.exports = (state, emitter) => {
   const updateLinks = () => {
@@ -28,12 +30,7 @@ module.exports = (state, emitter) => {
     state.db = await initDB()
     state.db.db.watch('trieWiki', updateLinks)
 
-    const index = `
-      <div>
-        <a href="/${state.db.name}">welcome</a>
-      </div>
-    `
-
+    const index = `# index\n\n***\n\n [welcome](${state.db.name})`
     await state.db.put('/index', index)
     
     state.params.wildcard ?
@@ -45,7 +42,7 @@ module.exports = (state, emitter) => {
     const path = `/${state.params.wildcard}`
     state.db.fetch(path).then(doc => {
       state.doc = doc 
-      state.html = html`${raw(doc)}`
+      state.html = html`${raw(md.render(doc))}`
       emitter.emit('render')
     }).catch(() => {
       // we're creating
