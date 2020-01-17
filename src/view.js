@@ -8,7 +8,6 @@ module.exports = (state, emit) => {
     const data = new FormData(e.currentTarget).entries()
     for(const [key, value] of data) input[key] = value
     
-    console.log('form input:', input)
     emit('content-submitted', input)
   }
 

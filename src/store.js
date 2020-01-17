@@ -47,13 +47,19 @@ module.exports = (state, emitter) => {
       state.doc = doc 
       state.html = html`${raw(doc)}`
       emitter.emit('render')
-    }).catch(console.log)
+    }).catch(() => {
+      // we're creating
+      state.db.put(path, `# ${state.params.wildcard}\n\n***`)
+        .then(() => {
+          emitter.emit('pushState', `${path}?edit=true`)
+        })
+    })
   })
 
   emitter.on('content-submitted', input => {
     const path = `/${state.params.wildcard}`
     state.db.put(path, input.body)
-      .then(resp => {
+      .then(() => {
         emitter.emit('pushState', path)
       }).catch(console.log)
   })

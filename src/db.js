@@ -63,7 +63,7 @@ module.exports = async () => {
     return new Promise((resolve, reject) => {
       db.get(path, (err, nodes) => {
         if (err) return reject(err)
-        if (!nodes[0]) return reject('path not found')
+        if (!nodes[0]) return reject()
         resolve(nodes[0].value)
       })
     })
