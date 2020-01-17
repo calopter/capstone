@@ -29,7 +29,7 @@ module.exports = async () => {
   name = `trieWiki/${Date.now()}`
   //   localStorage.setItem('trieWiki-rai-name', name)
   // }
-  console.log('using rai name:', name)
+  // console.log('using rai name:', name)
 
   // definitely get that key tho:
   const key = localStorage.getItem('trieWiki-hyperdb-key')
@@ -42,7 +42,7 @@ module.exports = async () => {
       localStorage.setItem('trieWiki-hyperdb-key',
         db.key.toString('hex'))
     }
-    console.log('hyperdb key:', db.key.toString('hex'))
+    // console.log('hyperdb key:', db.key.toString('hex'))
 
     db.put(name, `hello world from ${name}`, err => {
       if (err) return console.log(err)
@@ -55,7 +55,7 @@ module.exports = async () => {
       sw.join(db.discoveryKey)
 
       sw.on('connection', conn => console.log('connected:', conn))
-      db.get(name, (err, nodes) => console.log('self-read:', nodes[0].value))
+      // db.get(name, (err, nodes) => console.log('self-read:', nodes[0].value))
     })
   })
   

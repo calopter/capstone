@@ -6,7 +6,7 @@ const initDB = require('./db')
 
 module.exports = (state, emitter) => {
   const updateLinks = () => {
-    console.log('found stuff')
+    // console.log('found stuff')
     const h = state.db.db.createHistoryStream({ reverse: true })
     const ws = state.db.forEachChunk(
       { objectMode: true },
@@ -26,22 +26,35 @@ module.exports = (state, emitter) => {
   
   emitter.on('DOMContentLoaded', async () => {
     state.db = await initDB()
-    state.doc = html`
+    state.db.db.watch('trieWiki', updateLinks)
+
+    const index = `
       <div>
         <a href="/${state.db.name}">welcome</a>
       </div>
     `
-    
-    state.db.db.watch('trieWiki', updateLinks)
 
-    emitter.emit('render')
+    await state.db.put('/index', index)
+    
+    state.params.wildcard ?
+      emitter.emit('pushState', `/${state.params.wildcard}`)
+      : emitter.emit('pushState', '/index')
   })
 
   emitter.on('navigate', () => {
-    console.log('following:', state.params.wildcard)
-    state.db.fetch(state.params.wildcard).then(doc => {
-      state.doc = html`${raw(doc)}`
+    const path = `/${state.params.wildcard}`
+    state.db.fetch(path).then(doc => {
+      state.doc = doc 
+      state.html = html`${raw(doc)}`
       emitter.emit('render')
-    })
+    }).catch(console.log)
+  })
+
+  emitter.on('content-submitted', input => {
+    const path = `/${state.params.wildcard}`
+    state.db.put(path, input.body)
+      .then(resp => {
+        emitter.emit('pushState', path)
+      }).catch(console.log)
   })
 }
