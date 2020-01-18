@@ -63,9 +63,6 @@ module.exports = (state, emit) => {
       </nav>
       <section class="mid-gray mh3 mv4 f5 lh-copy">
         ${state.html}
-        <ul>
-          ${state.links.map(raw)}
-        </ul>
       </section>
     </body>
   `

@@ -1,41 +1,49 @@
 const html = require('choo/html')
 const raw = require('nanohtml/raw')
-const pump = require('pump')
 const { Remarkable } = require('remarkable')
 
-const initDB = require('./db')
+const WikiDb = require('./db')
+
 const md = new Remarkable()
 
 module.exports = (state, emitter) => {
-  const updateLinks = () => {
-    // console.log('found stuff')
-    const h = state.db.db.createHistoryStream({ reverse: true })
-    const ws = state.db.forEachChunk(
-      { objectMode: true },
-      (data, enc, next) => {
-        const { key, value } = data
-        state.links.push(`
-          <li><a href="/${key}">${key}</a></li>
-        `)
-      next()
-    })
+  const updateLinks = async () => {
+    // console.log('updating links')
     
-    pump(h, ws, () => console.log('pumped'))
-    emitter.emit('render')
+    let links = ''
+    
+    await state.db.db.list(async (err, list) => {
+      if (err) return console.log(err)
+      
+      list.map(([{ key }]) => links += `- [${key}](/${key})\n`)
+      
+      console.log('links:', links)
+      await state.db.put('/index', links)
+    })
+
+    if (state.params.wildcard === 'index') {
+      emitter.emit('replaceState', '/index')
+    }
   }
 
-  state.links = []
-  
   emitter.on('DOMContentLoaded', async () => {
-    state.db = await initDB()
-    state.db.db.watch('trieWiki', updateLinks)
+    state.db = new WikiDb()
+    await state.db.init()
+    
+    state.db.swarm.on('connection', conn => {
+      console.log('connected')
+      setTimeout(updateLinks, 1000)
+    })
 
-    const index = `# index\n\n***\n\n [welcome](${state.db.name})`
-    await state.db.put('/index', index)
+    const welcome = `# welcome\n\n***\n\n [hello](/${state.db.time})`
+    await state.db.put('/welcome', welcome)
+    await state.db.put(`${state.db.time}`, `hello world from ${state.db.name}`)
+
+    await updateLinks()
     
     state.params.wildcard ?
       emitter.emit('pushState', `/${state.params.wildcard}`)
-      : emitter.emit('pushState', '/index')
+      : emitter.emit('pushState', '/welcome')
   })
 
   emitter.on('navigate', () => {
