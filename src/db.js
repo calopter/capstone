@@ -13,7 +13,6 @@ module.exports = class WikiDb {
     // }
     console.log('using rai name:', this.name)
 
-    // definitely get that key tho:
     this.key = localStorage.getItem('trieWiki-hyperdb-key')
     this.db = hyperdb(rai(this.name), this.key, {valueEncoding: 'utf-8'})
   }
@@ -54,7 +53,7 @@ module.exports = class WikiDb {
   async connect (peer) {
     if (!peer.remoteUserData) throw new Error('no remoteUserData')
     
-    const data = JSON.parse(peer.userData)
+    const data = JSON.parse(peer.remoteUserData)
     const key = Buffer.from(data.key)
 
     return await this._authorize(key)
@@ -79,14 +78,14 @@ module.exports = class WikiDb {
   }
 
   _swarm () {
-    this.swarm = swarm({
-      stream: () => this.db.replicate({ live: true, userData: JSON.stringify({ key: this.db.local.key})}),
-      bootstrap: ['localhost:4000']
+    const key = this.db.local.key
+    const stream = () => this.db.replicate({
+      live: true,
+      userData: JSON.stringify({ key })
     })
+    
+    this.swarm = swarm({ stream, bootstrap: ['localhost:4000'] })
 
     this.swarm.join(this.db.discoveryKey)
-    // console.log('joined')
-
-    // console.log('sw', this.swarm)
   }
 }

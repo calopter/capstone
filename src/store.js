@@ -8,15 +8,13 @@ const md = new Remarkable()
 
 module.exports = (state, emitter) => {
   const updateLinks = async () => {
-    // console.log('updating links')
-    
     let links = ''
     
     await state.db.db.list(async (err, list) => {
       if (err) return console.log(err)
       
       list.map(([{ key }]) => {
-        key = key.slice(5)
+        key = key.slice(5) // removes 'wiki/' 
         links += `- [${key}](/${key})\n`
       })
       
@@ -46,10 +44,7 @@ module.exports = (state, emitter) => {
 
     await updateLinks()
     
-    state.db.db.watch('wiki', () => {
-      console.log('change')
-      updateLinks()
-    })
+    state.db.db.watch('wiki', updateLinks)
         
     state.params.wildcard ?
       emitter.emit('pushState', `/${state.params.wildcard}`)
