@@ -64,6 +64,9 @@ module.exports = (state, emit) => {
       <section class="mid-gray mh3 mv4 f5 lh-copy">
         ${state.html}
       </section>
+      <section class="mid-gray mh3 mv4 f5 lh-copy">
+        ${state.links}
+      </section>
     </body>
   `
 

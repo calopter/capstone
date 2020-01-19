@@ -15,39 +15,49 @@ module.exports = (state, emitter) => {
     await state.db.db.list(async (err, list) => {
       if (err) return console.log(err)
       
-      list.map(([{ key }]) => links += `- [${key}](/${key})\n`)
+      list.map(([{ key }]) => {
+        key = key.slice(5)
+        links += `- [${key}](/${key})\n`
+      })
       
       console.log('links:', links)
-      await state.db.put('/index', links)
-    })
+      state.links = html`${raw(md.render(links))}`
 
-    if (state.params.wildcard === 'index') {
-      emitter.emit('replaceState', '/index')
-    }
+      emitter.emit('render')
+    })
   }
 
   emitter.on('DOMContentLoaded', async () => {
     state.db = new WikiDb()
     await state.db.init()
-    
-    state.db.swarm.on('connection', conn => {
+
+    const welcome = `# welcome\n\n***\n\n [hello](/${state.db.time})`
+    await state.db.put('welcome', welcome)
+    await state.db.put(`${state.db.time}`, `hello world from ${state.db.name}`)
+
+    state.db.swarm.on('connection', async peer => {
       console.log('connected')
+      try {
+        const auth = await state.db.connect(peer)
+        console.log(auth)
+      } catch (err) { console.log(err) }
       setTimeout(updateLinks, 1000)
     })
 
-    const welcome = `# welcome\n\n***\n\n [hello](/${state.db.time})`
-    await state.db.put('/welcome', welcome)
-    await state.db.put(`${state.db.time}`, `hello world from ${state.db.name}`)
-
     await updateLinks()
     
+    state.db.db.watch('wiki', () => {
+      console.log('change')
+      updateLinks()
+    })
+        
     state.params.wildcard ?
       emitter.emit('pushState', `/${state.params.wildcard}`)
       : emitter.emit('pushState', '/welcome')
   })
 
   emitter.on('navigate', () => {
-    const path = `/${state.params.wildcard}`
+    const path = state.params.wildcard
     state.db.fetch(path).then(doc => {
       state.doc = doc 
       state.html = html`${raw(md.render(doc))}`
@@ -56,16 +66,16 @@ module.exports = (state, emitter) => {
       // we're creating
       state.db.put(path, `# ${state.params.wildcard}\n\n***`)
         .then(() => {
-          emitter.emit('pushState', `${path}?edit=true`)
+          emitter.emit('pushState', `/${path}?edit=true`)
         })
     })
   })
 
   emitter.on('content-submitted', input => {
-    const path = `/${state.params.wildcard}`
+    const path = state.params.wildcard
     state.db.put(path, input.body)
       .then(() => {
-        emitter.emit('pushState', path)
+        emitter.emit('pushState', `/${path}`)
       }).catch(console.log)
   })
 }

@@ -30,10 +30,11 @@ module.exports = class WikiDb {
     
     this._swarm()
   }
-  
+
+
   async fetch (path) {
     return new Promise((resolve, reject) => {
-      this.db.get(path, (err, nodes) => {
+      this.db.get(`wiki/${path}`, (err, nodes) => {
         if (err) return reject(err)
         if (!nodes[0]) return reject()
         resolve(nodes[0].value)
@@ -43,13 +44,36 @@ module.exports = class WikiDb {
 
   async put (key, val) {
     return new Promise((resolve, reject) => {
-      this.db.put(key, val, err => {
+      this.db.put(`wiki/${key}`, val, err => {
         if (err) return reject(err)
         resolve(`stored to ${key}`)
       })
     })
   }
 
+  async connect (peer) {
+    if (!peer.remoteUserData) throw new Error('no remoteUserData')
+    
+    const data = JSON.parse(peer.userData)
+    const key = Buffer.from(data.key)
+
+    return await this._authorize(key)
+  }
+
+  _authorize (key) {
+    return new Promise((resolve, reject) => {
+      this.db.authorized(key, (err, auth) => {
+        if (err) return reject(err)
+        if (auth) return resolve('already authorized')
+
+        this.db.authorize(key, err => {
+          if (err) return reject(err)
+          resolve('authorized')
+        })
+      })
+    })
+  }
+  
   _ready () {
     return new Promise(resolve => this.db.ready(resolve))
   }
