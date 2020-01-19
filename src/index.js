@@ -1,9 +1,11 @@
 const choo = require('choo')
-const main = require('./view')
+const init = require('./views/init')
+const main = require('./views/main')
 const archive = require('./store')
 
 const app = choo()
 app.use(archive)
+app.route('/', init)
 app.route('*', main)
 app.mount('body')
 

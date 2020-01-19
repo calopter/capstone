@@ -73,7 +73,7 @@ const display = props => {
 }
 
 module.exports = (state, emit) => {
-  const { doc, docHtml, links } = state
+  const { init, doc, docHtml, links } = state
   const path = state.params.wildcard
   const editing = state.query.edit
   

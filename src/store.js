@@ -25,8 +25,8 @@ module.exports = (state, emitter) => {
     })
   }
 
-  emitter.on('DOMContentLoaded', async () => {
-    state.db = new WikiDb()
+  const initDb = async () => {
+    state.db = new WikiDb(state.key)
     await state.db.init()
 
     const welcome = `# welcome\n\n***\n\n [hello](/${state.db.time})`
@@ -45,10 +45,19 @@ module.exports = (state, emitter) => {
     await updateLinks()
     
     state.db.db.watch('wiki', updateLinks)
-        
-    state.params.wildcard ?
-      emitter.emit('pushState', `/${state.params.wildcard}`)
-      : emitter.emit('pushState', '/welcome')
+  }
+    
+  emitter.on('DOMContentLoaded', () => {
+    state.key = localStorage.getItem('trieWiki-hyperdb-key')
+    emitter.emit('render')
+  })
+
+  emitter.on('init', async ({ key }) => {
+    state.key = key.length > 0 ? key : null
+    await initDb()
+    
+    localStorage.setItem('trieWiki-hyperdb-key', state.db.key)
+    emitter.emit('pushState', '/welcome')
   })
 
   emitter.on('navigate', () => {
