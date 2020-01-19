@@ -55,7 +55,7 @@ module.exports = (state, emitter) => {
     const path = state.params.wildcard
     state.db.fetch(path).then(doc => {
       state.doc = doc 
-      state.html = html`${raw(md.render(doc))}`
+      state.docHtml = html`${raw(md.render(doc))}`
       emitter.emit('render')
     }).catch(() => {
       // we're creating
