@@ -26,15 +26,8 @@ module.exports = (state, emit) => {
           </p>
         </div>
         <div class="flex flex-column justify-around w-25 mr3 min-h-100">
-          <label class="f6 h-50 border-box grow br-pill ba b--black-20 bw1
-            h-10 bg-washed-green dim mid-gray">
-            <span class="pl4 pa4">+</span>
-            <input class="h1 db o-0" form="content" type="file" id="file"/>
-          </label>
-        </div>
-        <div class="flex flex-column justify-around w-25 mr3 min-h-100">
-          <button class="f6 w-100 border-box grow br-pill ba bw1
-          ph3 pt2 pb3 h-50 mr4-ns bg-washed-green dim mid-gray"
+          <button class="center f6 w-100 border-box grow br-pill ba bw1
+          ph3 pt1 pb3 h-50 mr4-ns bg-washed-green dim mid-gray"
           type="submit"
           form="content"/>
             submit
