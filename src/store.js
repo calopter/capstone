@@ -57,7 +57,10 @@ module.exports = (state, emitter) => {
     
   emitter.on('DOMContentLoaded', () => {
     state.key = localStorage.getItem('trieWiki-hyperdb-key')
-    emitter.emit('render')
+    
+    state.params.wildcard ?
+      emitter.emit('init', { key: state.key }) :
+      emitter.emit('render')
   })
 
   emitter.on('init', async ({ key }) => {
