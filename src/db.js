@@ -28,7 +28,7 @@ module.exports = class WikiDb {
     this._swarm()
   }
 
-  async fetch (path) {
+  fetch (path) {
     return new Promise((resolve, reject) => {
       this.db.get(`wiki/${path}`, (err, nodes) => {
         if (err) return reject(err)
@@ -38,7 +38,7 @@ module.exports = class WikiDb {
     })
   }
 
-  async put (key, val) {
+  put (key, val) {
     return new Promise((resolve, reject) => {
       this.db.put(`wiki/${key}`, val, err => {
         if (err) return reject(err)
@@ -47,9 +47,17 @@ module.exports = class WikiDb {
     })
   }
 
+  list () {
+    return new Promise((resolve, reject) => {
+      this.db.list((err, list) => {
+        if (err) return reject(err)
+        return resolve(list)
+      })
+    })
+  }
+
   async connect (peer) {
     if (!peer.remoteUserData) throw new Error('no remoteUserData')
-    
     const data = JSON.parse(peer.remoteUserData)
     const key = Buffer.from(data.key)
 

@@ -7,21 +7,18 @@ const WikiDb = require('./db')
 const md = new Remarkable()
 
 module.exports = (state, emitter) => {
-  const updateLinks = () => {
+  const updateLinks = async () => {
     let links = ''
+    const pages = await state.db.list()
     
-    state.db.db.list((err, list) => {
-      if (err) return console.log(err)
-      
-      list.map(([{ key }]) => {
-        key = key.slice(5) // removes 'wiki/' 
-        links += `- [${key}](/${key})\n`
-      })
-      
-      console.log('links:', links)
-      state.links = html`${raw(md.render(links))}`
-      emitter.emit('render')
+    pages.map(([{ key }]) => {
+      key = key.slice(5) // removes 'wiki/' 
+      links += `- [${key}](/${key})\n`
     })
+      
+    console.log('links:', links)
+    state.links = html`${raw(md.render(links))}`
+    emitter.emit('render')
   }
 
   const initDb = async () => {
