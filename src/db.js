@@ -6,11 +6,13 @@ module.exports = class WikiDb {
   constructor (key) {
     this.time = Date.now()
     
-    // this.name = localStorage.getItem('trieWiki-rai-name')
-    // if (!this.name) {
-    this.name = `trieWiki/${this.time}`
-    //   localStorage.setItem('trieWiki-rai-name', name)
-    // }
+    this.name = localStorage.getItem('trieWiki/dbName')
+    console.log('read name', this.name)
+    
+    if (!this.name) {
+      this.name = `trieWiki/${this.time}`
+      localStorage.setItem('trieWiki/dbName', this.name)
+    }
     console.log('using rai name:', this.name)
 
     this.key = key

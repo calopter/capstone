@@ -25,9 +25,9 @@ module.exports = (state, emitter) => {
     state.db = new WikiDb(state.key)
     await state.db.init()
 
-    const welcome = `# welcome\n\n***\n\n [hello](/${state.db.time})`
+    const welcome = `# welcome\n\n***\n\n [hello](/${state.db.name})`
     await state.db.put('welcome', welcome)
-    await state.db.put(`${state.db.time}`, `hello world from ${state.db.name}`)
+    await state.db.put(`${state.db.name}`, `hello world from ${state.db.name}`)
 
     state.db.swarm.on('connection', async peer => {
       console.log('connected', state.db.peerCount)
