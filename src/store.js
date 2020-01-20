@@ -7,10 +7,10 @@ const WikiDb = require('./db')
 const md = new Remarkable()
 
 module.exports = (state, emitter) => {
-  const updateLinks = async () => {
+  const updateLinks = () => {
     let links = ''
     
-    await state.db.db.list(async (err, list) => {
+    state.db.db.list((err, list) => {
       if (err) return console.log(err)
       
       list.map(([{ key }]) => {
@@ -20,7 +20,6 @@ module.exports = (state, emitter) => {
       
       console.log('links:', links)
       state.links = html`${raw(md.render(links))}`
-
       emitter.emit('render')
     })
   }
@@ -38,18 +37,23 @@ module.exports = (state, emitter) => {
       try {
         const auth = await state.db.connect(peer)
         console.log(auth)
+        updateLinks()
       } catch (err) { console.log(err) }
-      setTimeout(updateLinks, 300)
-      emitter.emit('render')
+      
+      emitter.emit('navigate')
     })
 
     state.db.swarm.on('connection-closed', () => {
       emitter.emit('render')
     })
 
-    await updateLinks()
+    updateLinks()
     
-    state.db.db.watch('wiki', updateLinks)
+    state.db.db.watch('wiki', async () => {
+      updateLinks()
+      // reload
+      emitter.emit('navigate')
+    })
   }
     
   emitter.on('DOMContentLoaded', () => {
@@ -67,6 +71,8 @@ module.exports = (state, emitter) => {
 
   emitter.on('navigate', () => {
     const path = state.params.wildcard
+    state.index = false
+    
     state.db.fetch(path).then(doc => {
       state.doc = doc 
       state.docHtml = html`${raw(md.render(doc))}`
