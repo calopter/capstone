@@ -6,7 +6,7 @@ module.exports = (props, emit) => {
   const view = html`
     <nav class="bg-light-green">
       <a class="link dim mid-gray f6 f5-ns dib mv4 ml3 mr4"
-        href="/index">index</a>
+        onclick=${() => emit('index')}>index</a>
       <a class="link dim mid-gray f6 f5-ns dib mv4"
         href="/${path}?edit=true">edit</a>
     </nav>
@@ -16,7 +16,7 @@ module.exports = (props, emit) => {
     <nav class="flex justify-between bg-light-green mid-gray mw-100">
       <div>
         <a class="link dim mid-gray f6 f5-ns dib mt2 mb1 ml3"
-        href="/index">index</a>
+        onclick=${() => emit('index')}>index</a>
         <p class="f6 mt1 mb2 ml3">
           editing: <a class="link" href="/${path}">
             ${path}

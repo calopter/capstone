@@ -82,4 +82,9 @@ module.exports = (state, emitter) => {
         emitter.emit('pushState', `/${path}`)
       }).catch(console.log)
   })
+
+  emitter.on('index', () => {
+    state.index = !state.index
+    emitter.emit('render')
+  })
 }
