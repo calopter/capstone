@@ -40,6 +40,11 @@ module.exports = (state, emitter) => {
         console.log(auth)
       } catch (err) { console.log(err) }
       setTimeout(updateLinks, 300)
+      emitter.emit('render')
+    })
+
+    state.db.swarm.on('connection-closed', () => {
+      emitter.emit('render')
     })
 
     await updateLinks()
