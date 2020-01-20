@@ -1,14 +1,18 @@
 const html = require('choo/html')
 
 module.exports = (props, emit) => {
-  const { path, editing } = props
+  const { path, editing, peers } = props
   
   const view = html`
-    <nav class="bg-light-green">
-      <a class="link dim mid-gray f6 f5-ns dib mv4 ml3 mr4"
+    <nav class="flex justify-between mid-gray bg-light-green">
+      <a class="link dim f6 f5-ns dib mv4 ml3 mr4"
         onclick=${() => emit('index')}>index</a>
-      <a class="link dim mid-gray f6 f5-ns dib mv4"
+      <a class="link dim f6 f5-ns dib mv4"
         href="/${path}?edit=true">edit</a>
+      <p class="dim f6 mr3 dib mv4">
+        ${peers ? 'peers:  ' : ''}
+        ${peers}
+      </p> 
     </nav>
   `
   

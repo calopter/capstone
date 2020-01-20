@@ -85,5 +85,12 @@ module.exports = class WikiDb {
     this.swarm = swarm({ stream, bootstrap: ['localhost:4000'] })
 
     this.swarm.join(this.db.discoveryKey)
-  }
+    
+    this.swarm.on('connection', () => {
+      this.peerCount = this.peerCount ? this.peerCount + 1 : 1
+    })
+    
+    this.swarm.on('connection-closed', () => {
+      this.peerCount = this.peerCount > 1 ? this.peerCount - 1 : null
+    })  }
 }

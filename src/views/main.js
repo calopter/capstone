@@ -6,12 +6,13 @@ const index = require('./components/index')
 
 module.exports = (state, emit) => {
   const { init, doc, docHtml, links, key } = state
+  const peers = state.db ? state.db.peerCount : null
   const path = state.params.wildcard
   const editing = state.query.edit
   
   return html`
     <body class="bg-washed-green">
-      ${ nav({ path, editing }, emit) }
+      ${ nav({ path, editing, peers }, emit) }
       ${ state.index ? index({ links, key }, emit) : '' }
       ${ editing ?
         edit({ doc }, emit) :

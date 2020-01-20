@@ -34,12 +34,12 @@ module.exports = (state, emitter) => {
     await state.db.put(`${state.db.time}`, `hello world from ${state.db.name}`)
 
     state.db.swarm.on('connection', async peer => {
-      console.log('connected')
+      console.log('connected', state.db.peerCount)
       try {
         const auth = await state.db.connect(peer)
         console.log(auth)
       } catch (err) { console.log(err) }
-      setTimeout(updateLinks, 1000)
+      setTimeout(updateLinks, 300)
     })
 
     await updateLinks()
