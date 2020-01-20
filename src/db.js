@@ -28,7 +28,6 @@ module.exports = class WikiDb {
     this._swarm()
   }
 
-
   async fetch (path) {
     return new Promise((resolve, reject) => {
       this.db.get(`wiki/${path}`, (err, nodes) => {
@@ -82,7 +81,10 @@ module.exports = class WikiDb {
       userData: JSON.stringify({ key })
     })
     
-    this.swarm = swarm({ stream, bootstrap: ['localhost:4000'] })
+    this.swarm = swarm({
+      stream,
+      bootstrap: ['https://geut-webrtc-signal.herokuapp.com/']
+    })
 
     this.swarm.join(this.db.discoveryKey)
     
@@ -92,5 +94,6 @@ module.exports = class WikiDb {
     
     this.swarm.on('connection-closed', () => {
       this.peerCount = this.peerCount > 1 ? this.peerCount - 1 : null
-    })  }
+    })
+  }
 }
