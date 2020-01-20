@@ -19,13 +19,12 @@ module.exports = class WikiDb {
 
   async init () {
     await this._ready()
+
+    this._swarm()
     
     this.key = this.db.key.toString('hex')
-    
-    console.log('hyperdb key:', this.db.key.toString('hex'))
-    // console.log('using key', key)
-    
-    this._swarm()
+    console.log('hyperdb key:', this.key)
+    return this.key
   }
 
   fetch (path) {

@@ -46,11 +46,13 @@ module.exports = (state, emitter) => {
 
     updateLinks()
     
-    state.db.db.watch('wiki', async () => {
+    state.db.db.watch('wiki', () => {
       updateLinks()
       // reload
       emitter.emit('navigate')
     })
+
+    return state.db.key
   }
     
   emitter.on('DOMContentLoaded', () => {
@@ -59,10 +61,9 @@ module.exports = (state, emitter) => {
   })
 
   emitter.on('init', async ({ key }) => {
-    state.key = key.length > 0 ? key : null
-    await initDb()
+    state.key = await initDb()
     
-    localStorage.setItem('trieWiki-hyperdb-key', state.db.key)
+    localStorage.setItem('trieWiki-hyperdb-key', state.key)
     emitter.emit('pushState', '/welcome')
   })
 
