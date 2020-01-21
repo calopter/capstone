@@ -3,19 +3,12 @@ const rai = require('random-access-idb')
 const swarm = require('@geut/discovery-swarm-webrtc')
 
 module.exports = class WikiDb {
-  constructor (key) {
-    this.time = Date.now()
-    
-    this.name = localStorage.getItem('trieWiki/dbName')
-    console.log('read name', this.name)
-    
-    if (!this.name) {
-      this.name = `trieWiki/${this.time}`
-      localStorage.setItem('trieWiki/dbName', this.name)
-    }
-    console.log('using rai name:', this.name)
-
+  constructor (key, name) {
     this.key = key
+    this.name = name
+    
+    console.log('using rai name:', this.name)
+    
     this.db = hyperdb(rai(this.name), this.key, {valueEncoding: 'utf-8'})
   }
 

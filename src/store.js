@@ -3,6 +3,7 @@ const raw = require('nanohtml/raw')
 const { Remarkable } = require('remarkable')
 
 const WikiDb = require('./db')
+const { getDb, newDb, updateDb } = require('./dbNames')
 
 const md = new Remarkable()
 
@@ -21,8 +22,8 @@ module.exports = (state, emitter) => {
     emitter.emit('render')
   }
 
-  const initDb = async () => {
-    state.db = new WikiDb(state.key)
+  const initDb = async (key, name) => {
+    state.db = new WikiDb(key, name)
     await state.db.init()
 
     const welcome = `# welcome\n\n***\n\n [hello](/${state.db.name})`
@@ -54,19 +55,30 @@ module.exports = (state, emitter) => {
   }
     
   emitter.on('DOMContentLoaded', () => {
-    state.key = localStorage.getItem('trieWiki-hyperdb-key')
-    
+    state.key = localStorage.getItem('trieWiki/last')
+
     state.params.wildcard ?
-      emitter.emit('init', { key: state.key }) :
+      emitter.emit('init', state.key) :
       emitter.emit('render')
   })
 
-  emitter.on('init', async ({ key }) => {
-    state.key = key.length > 0 ? key : null
-    await initDb()
-    state.key = state.db.key
+  emitter.on('init', async key => {
+    const db = getDb(key)
     
-    localStorage.setItem('trieWiki-hyperdb-key', state.key)
+    if (db) {
+      console.log('found existing db')
+      state.name = db.name
+      state.key = db.key
+    } else {
+      console.log('making new db')
+      state.name = newDb()
+      state.key = key
+    }
+    
+    await initDb(state.key, state.name)
+    state.key = state.db.key
+
+    updateDb(state.key, state.name)
     emitter.emit('pushState', '/welcome')
   })
 

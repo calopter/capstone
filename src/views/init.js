@@ -8,7 +8,10 @@ module.exports = (state, emit) => {
     const data = new FormData(e.currentTarget).entries()
     for(const [key, value] of data) input[key] = value
 
-    emit('init', input)
+    let { key } = input
+    key = key && key.length > 0 ? key : null
+
+    emit('init', key)
   }
   
   return html`
