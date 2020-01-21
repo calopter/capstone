@@ -19,9 +19,14 @@ module.exports = (state, emitter) => {
     data = fs.readFileSync('docs/intro', 'utf8')
     state.db.put('intro', data)
     
-    data = fs.readFileSync('docs/test', 'utf8')
-    state.db.put('test', data)
-  }
+    data = fs.readFileSync('docs/a-wiki', 'utf8')
+    state.db.put('a-wiki', data)
+    
+    data = fs.readFileSync('docs/hypertext', 'utf8')
+    state.db.put('hypertext', data)
+    
+    data = fs.readFileSync('docs/markdown', 'utf8')
+    state.db.put('markdown', data)  }
   
   const updateLinks = async () => {
     let links = ''
