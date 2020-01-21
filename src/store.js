@@ -7,7 +7,22 @@ const { getDb, newDb, updateDb } = require('./dbNames')
 
 const md = new Remarkable()
 
+const fs = require('fs')
+
 module.exports = (state, emitter) => {
+  const loadDocs = async () => {
+    let data
+    
+    data = fs.readFileSync('docs/demo', 'utf8')
+    state.db.put('demo', data)
+    
+    data = fs.readFileSync('docs/intro', 'utf8')
+    state.db.put('intro', data)
+    
+    data = fs.readFileSync('docs/test', 'utf8')
+    state.db.put('test', data)
+  }
+  
   const updateLinks = async () => {
     let links = ''
     const pages = await state.db.list()
@@ -26,7 +41,7 @@ module.exports = (state, emitter) => {
     state.db = new WikiDb(key, name)
     await state.db.init()
 
-    const welcome = `# welcome\n\n***\n\n [hello](/${state.db.name})`
+    const welcome = `# welcome\n\n***\n\n[demo](/demo)\n\n[hello](/${state.db.name})`
     await state.db.put('welcome', welcome)
     await state.db.put(`${state.db.name}`, `hello world from ${state.db.name}`)
 
@@ -79,6 +94,8 @@ module.exports = (state, emitter) => {
     state.key = state.db.key
 
     updateDb(state.key, state.name)
+
+    loadDocs()
     emitter.emit('pushState', '/welcome')
   })
 
