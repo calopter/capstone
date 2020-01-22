@@ -79,7 +79,7 @@ module.exports = (state, emitter) => {
     state.key = state.db.key
 
     updateDb(state.key, state.name)
-    emitter.emit('pushState', '/welcome')
+    emitter.emit('pushState', state.params.wildcard || '/welcome')
   })
 
   emitter.on('navigate', () => {
