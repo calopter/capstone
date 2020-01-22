@@ -111,7 +111,7 @@ module.exports = (state, emitter) => {
     updateDb(state.key, state.name)
 
     loadDocs()
-    emitter.emit('pushState', '/welcome')
+    emitter.emit('pushState', state.params.wildcard || '/welcome')
   })
 
   emitter.on('navigate', () => {

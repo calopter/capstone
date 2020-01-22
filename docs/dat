@@ -10,3 +10,7 @@ to sync between users directly and minimize relying on centralized servers, trie
   - load pages from others who are connected
   - edit anything in the wiki
   - have edits spread to others who connect!
+
+
+- the peer count in the right of navigation bar shows your current connections
+- when a peer has connected, you should see their 'fingerprint' page appear in your index
