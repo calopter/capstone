@@ -1,10 +1,13 @@
-[<- back](/a-wiki) [next ->]()
+[<- wiki](/a-wiki) [p2p ->](/p2p)
 ***
 
-linking documents together can be used to create many kinds of structured information, such as this presentation
+linking documents together can be used to create many kinds of structured information, such as this presentation, or less linear structures like [zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
 
 **to create a new page:**
 - edit a page
 - add a new link using `[]()` and submit changes
 - click the link
 - add to the new page
+
+**new pages**
+- [new](/new)

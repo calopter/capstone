@@ -1,10 +1,11 @@
-[<- back](/intro) [next ->](/hypertext)
+[<- intro](/intro) [hypertext ->](/hypertext)
 ***
 
-using markdown formatting, you can create rich text documents
+with a wiki, people collaboratively steward knowledge centers, such as with wikipedia
+
+trieWiki uses [markdown formatting](https://www.markdownguide.org/), to create rich text documents
 
 **to see or edit markdown source for a page:**
-- click edit in the navbar 
-
-**[markdown examples](/markdown)**
+- click `edit` in the navigation bar 
+- [markdown examples](/markdown)
 

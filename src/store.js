@@ -26,7 +26,17 @@ module.exports = (state, emitter) => {
     state.db.put('hypertext', data)
     
     data = fs.readFileSync('docs/markdown', 'utf8')
-    state.db.put('markdown', data)  }
+    state.db.put('markdown', data)
+    
+    data = fs.readFileSync('docs/p2p', 'utf8')
+    state.db.put('p2p', data)
+    
+    data = fs.readFileSync('docs/dat', 'utf8')
+    state.db.put('dat', data)
+
+    data = fs.readFileSync('docs/thanks', 'utf8')
+    state.db.put('thanks', data)
+  }
   
   const updateLinks = async () => {
     let links = ''
