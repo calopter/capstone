@@ -10,34 +10,6 @@ const md = new Remarkable()
 const fs = require('fs')
 
 module.exports = (state, emitter) => {
-  const loadDocs = async () => {
-    let data
-    
-    data = fs.readFileSync('docs/demo', 'utf8')
-    state.db.put('demo', data)
-    
-    data = fs.readFileSync('docs/intro', 'utf8')
-    state.db.put('intro', data)
-    
-    data = fs.readFileSync('docs/a-wiki', 'utf8')
-    state.db.put('a-wiki', data)
-    
-    data = fs.readFileSync('docs/hypertext', 'utf8')
-    state.db.put('hypertext', data)
-    
-    data = fs.readFileSync('docs/markdown', 'utf8')
-    state.db.put('markdown', data)
-    
-    data = fs.readFileSync('docs/p2p', 'utf8')
-    state.db.put('p2p', data)
-    
-    data = fs.readFileSync('docs/dat', 'utf8')
-    state.db.put('dat', data)
-
-    data = fs.readFileSync('docs/thanks', 'utf8')
-    state.db.put('thanks', data)
-  }
-  
   const updateLinks = async () => {
     let links = ''
     const pages = await state.db.list()
@@ -110,7 +82,6 @@ module.exports = (state, emitter) => {
 
     updateDb(state.key, state.name)
 
-    loadDocs()
     emitter.emit('pushState', state.params.wildcard || '/welcome')
   })
 
