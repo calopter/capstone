@@ -28,10 +28,6 @@ module.exports = (state, emitter) => {
     state.db = new WikiDb(key, name)
     await state.db.init()
 
-    const welcome = `# welcome\n\n***\n\n[demo](/demo)\n\n[hello](/${state.db.name})`
-    await state.db.put('welcome', welcome)
-    await state.db.put(`${state.db.name}`, `hello world from ${state.db.name}`)
-
     state.db.swarm.on('connection', async peer => {
       console.log('connected', state.db.peerCount)
       try {
@@ -82,7 +78,7 @@ module.exports = (state, emitter) => {
 
     updateDb(state.key, state.name)
 
-    emitter.emit('pushState', state.params.wildcard || '/welcome')
+    emitter.emit('pushState', state.params.wildcard || '/index')
   })
 
   emitter.on('navigate', () => {
